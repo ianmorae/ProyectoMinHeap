@@ -50,6 +50,43 @@ public class MinHeap {
         return monticulo.get(0);
     }
 
+    /**
+     * Crea un nuevo nodo con los datos recibidos, lo inserta al final del
+     * arreglo y lo reubica mediante upHeapify() para mantener la propiedad
+     * de ordenamiento del montículo.
+     *
+     * @param clave valor numérico que define la prioridad del nuevo nodo.
+     * @param dato  información asociada al nuevo nodo.
+     */
+    public void insertar(int clave, String dato) {
+        Nodo nuevoNodo = new Nodo(clave, dato);
+        monticulo.add(nuevoNodo);
+        //El nuevo nodo queda en la última posición del arreglo.
+        upHeapify(monticulo.size() - 1);
+    }
+
+    /**
+     * Sube recursivamente el nodo ubicado en el índice recibido, intercambiándolo
+     * con su padre mientras su clave sea menor que la de este.
+     *
+     * @param indice posición del nodo que se debe reubicar.
+     */
+    private void upHeapify(int indice) {
+        //Caso base: el nodo llegó a la cima, por lo que no tiene padre.
+        if (indice == 0) {
+            return;
+        }
+
+        int indicePadre = obtenerPadre(indice);
+
+        //Si el nodo es menor que su padre, se intercambian y se repite el proceso
+        //desde la nueva posición del nodo.
+        if (esMenor(indice, indicePadre)) {
+            intercambiar(indice, indicePadre);
+            upHeapify(indicePadre);
+        }
+    }
+
     //Métodos auxiliares.
     /**
      * @param indice posición de un nodo.
