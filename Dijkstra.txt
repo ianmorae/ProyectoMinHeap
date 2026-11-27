@@ -1,0 +1,107 @@
+APLICACIÓN DE LOS MONTÍCULOS AL ALGORITMO DE DIJKSTRA
+SOFT-10 Estructuras de Datos - Universidad CENFOTEC
+Estudiante: Ian Aarón Mora Espinoza
+
+1. ¿Qué resuelve el algoritmo de Dijkstra?
+------------------------------------------------------------------------------
+El algoritmo de Dijkstra encuentra el camino más corto desde un vértice de
+origen hacia todos los demás vértices de un grafo cuyas aristas tienen pesos
+no negativos (por ejemplo, distancias entre ciudades, tiempos de viaje o
+costos de enviar datos entre computadoras de una red).
+
+El algoritmo mantiene para cada vértice una "distancia tentativa", que es la
+mejor distancia conocida hasta el momento desde el origen. Al inicio, el
+origen tiene distancia 0 y los demás vértices distancia infinita. Luego repite
+estos pasos hasta haber visitado todos los vértices alcanzables:
+
+  a) Seleccionar el vértice NO visitado con la menor distancia tentativa.
+  b) Marcarlo como visitado (su distancia ya es definitiva).
+  c) "Relajar" sus aristas: para cada vecino, si llegar a él pasando por el
+     vértice actual es más corto que su distancia tentativa, se actualiza.
+
+2. ¿Dónde entra el montículo mínimo?
+------------------------------------------------------------------------------
+El paso (a) es el que más se repite: en cada iteración hay que encontrar el
+vértice con la distancia más pequeña. Esta es exactamente la operación que un
+montículo mínimo resuelve de forma eficiente, porque siempre mantiene en la
+cima el elemento con la clave más pequeña.
+
+La relación con la implementación de esta práctica es directa:
+
+  - Cada nodo del montículo representa un vértice del grafo.
+  - La CLAVE del nodo es la distancia tentativa desde el origen.
+  - El DATO del nodo es el nombre o identificador del vértice.
+
+Con esta representación, las operaciones del montículo se usan así:
+
+  - insertar(): cada vez que se encuentra una distancia mejor hacia un vecino
+    (paso c), se inserta el par (distancia, vértice). El upHeapify() se
+    encarga de subirlo a su posición correcta.
+  - eliminarMin(): en el paso (a) se extrae la cima, que es el vértice con la
+    menor distancia pendiente. El downHeapify() reacomoda el resto.
+  - peek(): permite consultar cuál será el siguiente vértice sin extraerlo.
+  - heapify(): sirve si se desea construir de una sola vez el montículo
+    inicial con todos los vértices y sus distancias.
+
+Puede ocurrir que un mismo vértice quede varias veces en el montículo con
+distancias distintas (una vieja y una mejorada). Esto no es un problema: como
+el montículo mínimo permite claves duplicadas y siempre entrega primero la
+menor, la distancia correcta sale antes. Cuando más adelante se extrae una
+entrada vieja de un vértice que ya fue visitado, simplemente se descarta.
+
+3. ¿Por qué mejora la eficiencia?
+------------------------------------------------------------------------------
+Sea V la cantidad de vértices y E la cantidad de aristas del grafo.
+
+  - Sin montículo: para encontrar el vértice con menor distancia hay que
+    recorrer una lista completa en cada iteración, lo cual cuesta O(V). Como
+    esto se hace V veces, el algoritmo cuesta O(V^2).
+
+  - Con montículo mínimo: insertar y eliminarMin cuestan O(log n), porque
+    upHeapify y downHeapify solo recorren la altura del árbol, y un árbol
+    binario completo de n nodos tiene altura log n. Se hace una extracción
+    por vértice y, como máximo, una inserción por arista, por lo que el
+    algoritmo cuesta O((V + E) log V).
+
+En grafos grandes con pocas aristas por vértice (como las redes de carreteras
+o las redes de computadoras), la diferencia es enorme. Por ejemplo, con
+100 000 vértices, V^2 son 10 000 millones de operaciones, mientras que
+(V + E) log V, con unas 300 000 aristas, ronda los 7 millones.
+
+4. Ejemplo paso a paso
+------------------------------------------------------------------------------
+Grafo no dirigido con origen en A:
+
+        A --4-- B
+        |     / |
+        1   2   1
+        | /     |
+        C --5-- D
+
+  Aristas: A-B = 4, A-C = 1, C-B = 2, B-D = 1, C-D = 5
+
+  Paso | eliminarMin()  | Acción                              | Montículo
+  -----+----------------+-------------------------------------+-------------------
+   0   |       -        | Se inserta el origen                | (0,A)
+   1   | (0,A)          | B = 4, C = 1 -> se insertan         | (1,C) (4,B)
+   2   | (1,C)          | B mejora a 1+2 = 3; D = 1+5 = 6     | (3,B) (4,B) (6,D)
+   3   | (3,B)          | D mejora a 3+1 = 4                  | (4,B) (6,D) (4,D)
+   4   | (4,B)          | B ya fue visitado -> se descarta    | (4,D) (6,D)
+   5   | (4,D)          | D se visita, no hay mejoras         | (6,D)
+   6   | (6,D)          | D ya fue visitado -> se descarta    | (vacío)
+
+  Resultado (distancias más cortas desde A):
+     A = 0,  C = 1,  B = 3 (A-C-B),  D = 4 (A-C-B-D)
+
+En cada paso, el montículo entregó inmediatamente el siguiente vértice a
+procesar sin necesidad de revisar todos los vértices pendientes, que es
+justamente la ventaja que aporta esta estructura de datos.
+
+5. Conclusión
+------------------------------------------------------------------------------
+El montículo mínimo funciona como la "cola de prioridad" del algoritmo de
+Dijkstra: guarda los vértices pendientes ordenados por su distancia y permite
+obtener siempre el más cercano en tiempo logarítmico. Gracias a esto, el
+algoritmo es práctico en problemas reales como los sistemas de navegación GPS
+y los protocolos de enrutamiento de redes (por ejemplo, OSPF), donde se
+calculan caminos más cortos sobre grafos de gran tamaño.
