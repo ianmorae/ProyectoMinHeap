@@ -87,6 +87,59 @@ public class MinHeap {
         }
     }
 
+    /**
+     * Elimina y retorna la cima del montículo. Antes de retornarla, coloca el
+     * último elemento del arreglo en la cima y lo reubica mediante downHeapify()
+     * para restaurar la propiedad de ordenamiento.
+     *
+     * @return el nodo con la clave más pequeña, o null si el montículo está vacío.
+     */
+    public Nodo eliminarMin() {
+        if (estaVacio()) {
+            return null;
+        }
+
+        Nodo cima = monticulo.get(0);
+        Nodo ultimo = monticulo.remove(monticulo.size() - 1);
+
+        //Si después de remover el último nodo aún quedan elementos, este pasa a
+        //ocupar la cima y se reubica hacia abajo.
+        if (!estaVacio()) {
+            monticulo.set(0, ultimo);
+            downHeapify(0);
+        }
+
+        return cima;
+    }
+
+    /**
+     * Baja recursivamente el nodo ubicado en el índice recibido, intercambiándolo
+     * con su hijo más pequeño mientras la clave de alguno de sus hijos sea menor
+     * que la suya.
+     *
+     * @param indice posición del nodo que se debe reubicar.
+     */
+    private void downHeapify(int indice) {
+        int indiceIzquierdo = obtenerHijoIzquierdo(indice);
+        int indiceDerecho = obtenerHijoDerecho(indice);
+        int indiceMenor = indice;
+
+        //Se busca cuál es el menor entre el nodo actual y sus hijos (si existen).
+        if (indiceIzquierdo < monticulo.size() && esMenor(indiceIzquierdo, indiceMenor)) {
+            indiceMenor = indiceIzquierdo;
+        }
+        if (indiceDerecho < monticulo.size() && esMenor(indiceDerecho, indiceMenor)) {
+            indiceMenor = indiceDerecho;
+        }
+
+        //Caso recursivo: si un hijo es menor, se intercambian y se repite el proceso
+        //desde la nueva posición del nodo. Si no, el nodo ya está en su lugar.
+        if (indiceMenor != indice) {
+            intercambiar(indice, indiceMenor);
+            downHeapify(indiceMenor);
+        }
+    }
+
     //Métodos auxiliares.
     /**
      * @param indice posición de un nodo.
