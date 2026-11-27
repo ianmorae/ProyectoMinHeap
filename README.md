@@ -1,18 +1,27 @@
-## Getting Started
+# Práctica 3 — Montículo mínimo (Min-Heap) en Java
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+**Curso:** SOFT-10 Estructuras de Datos — Universidad CENFOTEC
+**Estudiante:** Ian Aarón Mora Espinoza
 
-## Folder Structure
+Implementación de un montículo mínimo mediante un `ArrayList`, con un menú de consola que permite utilizar todas sus operaciones.
 
-The workspace contains two folders by default, where:
+## Estructura del proyecto
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+| Archivo | Descripción |
+|---|---|
+| `src/Nodo.java` | Elemento del montículo: una clave numérica (prioridad) y un dato asociado. |
+| `src/MinHeap.java` | Montículo mínimo: `insertar()`, `eliminarMin()`, `peek()`, `heapify()` y los métodos recursivos `upHeapify()` y `downHeapify()`. |
+| `src/Menu.java` | Menú de consola con validación de entradas. |
+| `src/Main.java` | Punto de entrada del programa. |
+| `Dijkstra.txt` | Explicación de la aplicación de los montículos al algoritmo de Dijkstra. |
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+## Cómo ejecutar
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+**Desde VSCode:** abrir la carpeta del proyecto y ejecutar `Main.java` con el botón *Run*.
 
-## Dependency Management
+**Desde la terminal** (en la raíz del proyecto):
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+```
+javac -d bin src/*.java
+java -cp bin Main
+```
