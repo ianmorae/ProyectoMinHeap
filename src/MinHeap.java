@@ -140,6 +140,26 @@ public class MinHeap {
         }
     }
 
+    /**
+     * Convierte un arreglo potencialmente desordenado en un montículo mínimo
+     * válido y reemplaza con él el contenido anterior del atributo monticulo.
+     * Para ello aplica downHeapify() a cada nodo que tiene hijos, empezando por
+     * el último de ellos y avanzando hacia la cima.
+     *
+     * @param arreglo lista de nodos que se desea convertir en montículo.
+     */
+    public void heapify(ArrayList<Nodo> arreglo) {
+        //Se copia el arreglo recibido para no modificar la lista original.
+        monticulo = new ArrayList<>(arreglo);
+
+        //El último nodo con hijos es el padre del último elemento del arreglo.
+        int ultimoConHijos = (monticulo.size() / 2) - 1;
+
+        for (int i = ultimoConHijos; i >= 0; i--) {
+            downHeapify(i);
+        }
+    }
+
     //Métodos auxiliares.
     /**
      * @param indice posición de un nodo.
